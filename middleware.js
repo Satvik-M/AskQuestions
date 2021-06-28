@@ -1,4 +1,4 @@
-const { questionSchema, answerSchema } = require("./schemas");
+const { questionSchema, answerSchema, userSchema } = require("./schemas");
 const ExpressError = require("./utils/ExpressError");
 const Question = require("./models/question");
 const Answer = require("./models/answers");
@@ -12,6 +12,14 @@ module.exports.validateQuestion = (req, res, next) => {
 };
 module.exports.validateAnswer = (req, res, next) => {
   const { error } = answerSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((e) => e.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else next();
+};
+
+module.exports.validateUser = (req, res, next) => {
+  const { error } = userSchema.validate(req.body);
   if (error) {
     const msg = error.details.map((e) => e.message).join(",");
     throw new ExpressError(msg, 400);
