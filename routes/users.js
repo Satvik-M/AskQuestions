@@ -4,6 +4,15 @@ const User = require("../models/users");
 const catchAsync = require("../utils/catchAsync");
 const passport = require("passport");
 const { validateUser } = require("../middleware");
+const { email, client } = require("../mail");
+
+client.sendMail(email, function (err, info) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log("Message sent: " + info.response);
+  }
+});
 
 router.get("/register", async (req, res) => {
   res.render("users/register");
