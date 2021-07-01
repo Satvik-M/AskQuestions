@@ -19,11 +19,20 @@ router.get(
     if (!link) {
       req.flash(
         "error",
-        "Sorry, some error occured, We were not able to verify your account."
+        "Sorry, some error occured. Either you have already verified or your token has expired. Please register again for latter."
       );
     } else {
-      req.flash("success", "Account verified successfully");
-      await User.findByIdAndUpdate(link.user, { isVerified: true });
+      let diff = Date.now() - link.time;
+      diff = diff / (1000 * 60 * 60);
+      console.log(diff);
+      if (diff <= 24) {
+        req.flash("success", "Account verified successfully");
+        await User.findByIdAndUpdate(link.user, { isVerified: true });
+        await UserVerification.findByIdAndDelete(req.params.v_id);
+      } else {
+        req.flash("error", "Token has expired. Please register again");
+        return res.redirect("/users/register");
+      }
     }
     res.redirect("/users/login");
   })
@@ -37,7 +46,7 @@ router.post(
       const { email, username, password } = req.body;
       const user = new User({ email, username });
       const regUser = await User.register(user, password);
-      const link = new UserVerification({ user: user._id });
+      const link = new UserVerification({ user: user._id, time: Date.now() });
       await link.save();
       // change the link to your own after hosting the site
       const verify = `http://localhost:3000/users/activate/${link._id}`;

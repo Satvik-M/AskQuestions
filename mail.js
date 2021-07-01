@@ -26,5 +26,3 @@ const email = (module.exports.authMail = (mail_id, verify) =>
       }
     }
   ));
-
-// use this funtion where you want your email to be sent

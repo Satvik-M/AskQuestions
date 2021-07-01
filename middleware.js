@@ -27,8 +27,12 @@ module.exports.validateUser = (req, res, next) => {
 };
 
 module.exports.isLoggedIn = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user.isVerified) {
     return next();
+  }
+  if (!req.user.isVerified) {
+    req.flash("error", "Please verify for email first.");
+    return res.redirect("/users/login");
   }
   req.flash("error", "Please login to continue");
   res.redirect("/users/login");

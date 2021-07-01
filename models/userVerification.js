@@ -6,7 +6,7 @@ const LinkSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  time: { type: Date, default: Date.now() },
+  time: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model("UserVerification", LinkSchema);
