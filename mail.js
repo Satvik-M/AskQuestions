@@ -9,21 +9,22 @@ const client = nodemailer.createTransport({
     pass: "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",
   },
 });
-const email = {
-  from: "satvikmakharia@gmail.com",
-  to: "kingpinthe5@gmail.com",
-  subject: "Hello",
-  text: "Hello world",
-  html: "<b>Hello world</b>",
-};
-
-module.exports.authMail = () =>
-  client.sendMail(email, function (err, info) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Message sent: " + info.response);
+const email = (module.exports.authMail = (mail_id, verify) =>
+  client.sendMail(
+    {
+      from: "satvikmakharia@gmail.com",
+      to: `${mail_id}`,
+      subject: "Please confirm your mail account",
+      text: `Please click on the link given below in order to confirm your mail account...${verify}`,
+      html: `<b>Please click on the link given below in order to confirm your mail account...</b><a href=${verify} target='_blank'>Verify</a>`,
+    },
+    function (err, info) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Message sent: " + info.response);
+      }
     }
-  });
+  ));
 
 // use this funtion where you want your email to be sent
